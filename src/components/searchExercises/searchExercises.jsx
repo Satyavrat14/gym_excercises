@@ -1,17 +1,42 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ExerciseOptions, fetchData } from "../../utils/fetchData";
+import HorizontalScrollBar from "../horizontalScrollBar";
 
-const SearchExercises = () => {
+const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   const [search, setSearch] = useState("");
-  const handleSearch = async () => {
-    if (search) {
-      const exercisesData = await fetchData(
+  const [loading, setLoading] = useState(false);
+  const [bodyParts, setBodyparts] = useState([]);
+  useEffect(() => {
+    const fetchExercisesData = async () => {
+      const bodyPartsData = await fetchData(
         "https://exercisedb.p.rapidapi.com/exercises/bodyPartList",
         ExerciseOptions
       );
-      console.log(exercisesData);
+      setBodyparts(["all", ...bodyPartsData]);
+    };
+    fetchExercisesData();
+  }, []);
+  const handleSearch = async () => {
+    setLoading(true);
+    if (search) {
+      const exercisesData = await fetchData(
+        "https://exercisedb.p.rapidapi.com/exercises?limit=1000&offset=0",
+        ExerciseOptions
+      );
+      const searchedExcercises = exercisesData.filter(
+        (excercise) =>
+          excercise.name.toLocaleLowerCase().includes(search) ||
+          excercise.target.toLocaleLowerCase().includes(search) ||
+          excercise.equipment.toLocaleLowerCase().includes(search) ||
+          excercise.bodyPart.toLocaleLowerCase().includes(search)
+      );
+
+      setSearch("");
+      setExercises(searchedExcercises);
     }
+    setLoading(false);
+    window.scrollTo({ top: "1800", behavior: "smooth" });
   };
   return (
     <Stack alignItems="center" mt="37px" justifyContent="center" p="20px">
@@ -56,6 +81,22 @@ const SearchExercises = () => {
         >
           Search
         </Button>
+        {loading && (
+          <Typography
+            fontSize="15px"
+            color="#ff2625"
+            borderBottom="2px solid #ff2625"
+          >
+            Loading Please Wait
+          </Typography>
+        )}
+      </Box>
+      <Box sx={{ position: "relative", width: "100%", padding: "20px" }}>
+        <HorizontalScrollBar
+          data={bodyParts}
+          bodyPart={bodyPart}
+          setBodyPart={setBodyPart}
+        />
       </Box>
     </Stack>
   );
