@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Detail from "../components/detail";
 import SimilarExercises from "../components/similarExercises";
-import ExerciseVideo from "../components/ExerciseVideo";
+import ExerciseVideo from "../components/exerciseVideo";
 import { useParams } from "react-router-dom";
 import { ExerciseOptions, fetchData, YoutubeOptions } from "../utils/fetchData";
 
