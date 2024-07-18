@@ -22,6 +22,7 @@ const Detail = ({ exerciseDetail }) => {
   ];
   return (
     <Stack
+      key={name}
       gap="60px"
       sx={{
         flexDirection: { lg: "row" },

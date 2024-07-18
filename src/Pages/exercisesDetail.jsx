@@ -2,13 +2,15 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Detail from "../components/detail";
 import SimilarExercises from "../components/similarExercises";
-import ExerciseVideo from "../components/exerciseVideo";
+import ExerciseVideo from "../components/ExerciseVideo";
 import { useParams } from "react-router-dom";
 import { ExerciseOptions, fetchData, YoutubeOptions } from "../utils/fetchData";
 
 const ExcerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState({});
   const [exerciseVideos, setExerciseVideos] = useState([]);
+  const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
+  const [equipmentExercises, setEquipmentExercises] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
@@ -28,6 +30,19 @@ const ExcerciseDetail = () => {
         YoutubeOptions
       );
       setExerciseVideos(exerciseVideoData.contents);
+
+      const targetMuscleExerciseData = await fetchData(
+        `${exerciseDbUrl}/exercises/target/${exerciseDetailData.target}`,
+        ExerciseOptions
+      );
+      setTargetMuscleExercises(targetMuscleExerciseData);
+
+      const equipmentExerciseData = await fetchData(
+        `${exerciseDbUrl}/exercises/equipment/${exerciseDetailData.equipment}`,
+        ExerciseOptions
+      );
+
+      setEquipmentExercises(equipmentExerciseData);
     };
     fetchExercisesData();
   }, [id]);
@@ -38,7 +53,10 @@ const ExcerciseDetail = () => {
         exerciseVideos={exerciseVideos}
         name={exerciseDetail.name}
       />
-      <SimilarExercises />
+      <SimilarExercises
+        targetMuscleExercises={targetMuscleExercises}
+        equipmentExercises={equipmentExercises}
+      />
     </Box>
   );
 };

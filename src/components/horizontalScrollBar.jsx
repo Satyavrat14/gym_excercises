@@ -6,6 +6,9 @@ import RightArrowIcon from "../assets/icons/right-arrow.png";
 import LeftArrowIcon from "../assets/icons/left-arrow.png";
 import BodyPart from "./bodyPart";
 
+import "react-horizontal-scrolling-menu/dist/styles.css";
+import ExerciseCard from "./exerciseCard";
+
 const LeftArrow = () => {
   const { scrollPrev } = useContext(VisibilityContext);
 
@@ -25,21 +28,24 @@ const RightArrow = () => {
     </Typography>
   );
 };
-const HorizontalScrollbar = ({ data, bodyParts, setBodyPart, bodyPart }) => {
-  return (
-    <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
-      {data.map((item) => (
-        <Box
-          key={item.id || item}
-          itemID={item.id || item}
-          title={item.id || item}
-          m="0 40px"
-        >
+
+const HorizontalScrollbar = ({ data, bodyParts, setBodyPart, bodyPart }) => (
+  <ScrollMenu LeftArrow={LeftArrow} RightArrow={RightArrow}>
+    {data.map((item) => (
+      <Box
+        key={item.id || item}
+        itemID={item.id || item}
+        title={item.id || item}
+        m="0 40px"
+      >
+        {bodyParts ? (
           <BodyPart item={item} setBodyPart={setBodyPart} bodyPart={bodyPart} />
-        </Box>
-      ))}
-    </ScrollMenu>
-  );
-};
+        ) : (
+          <ExerciseCard exercise={item} bodyParts />
+        )}
+      </Box>
+    ))}
+  </ScrollMenu>
+);
 
 export default HorizontalScrollbar;
